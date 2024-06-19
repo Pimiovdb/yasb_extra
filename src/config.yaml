@@ -298,9 +298,9 @@ widgets:
     type: "yasb.dropdown.DropdownWidget"
     options:
       items:
-        "CPU Monitor": "cpu"
-        "Memory Monitor": "memory"
-        "Volume Control": "volume"
+        "1": "cpu"
+        "2": "memory"
+        "3": "volume"
       update_interval: 5000
       callbacks:
         on_left: "do_nothing"

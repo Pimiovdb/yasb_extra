@@ -92,17 +92,27 @@ class DropdownWidget(BaseWidget):
             from core.widgets.yasb.battery import BatteryWidget
             return BatteryWidget(
                 label="\ue266 Battery:{battery[percent]}%",
+                label_alt="{percent}%",
+                time_remaining_natural=True,
+                charging_options={'icon_format': "{charging_icon} {icon}", 'blink_charging_icon': False},
+                status_thresholds={'critical': 10, 'low': 25, 'medium': 75, 'high': 95, 'full': 100},
+                status_icons={
+                    'icon_charging': '\uf0e7',
+                    'icon_critical': '\udb80\udc83',
+                    'icon_low': '\udb80\udc7a',
+                    'icon_medium': '\udb80\udc7c',
+                    'icon_high': '\udb80\udc80',
+                    'icon_full': '\udb80\udc79'
+                },
                 update_interval=10000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                }
+                callbacks={'on_left': 'do_nothing', 'on_middle': 'do_nothing', 'on_right': 'do_nothing'}
             )
         elif widget_name == "clock":
             from core.widgets.yasb.clock import ClockWidget
             return ClockWidget(
                 label="{time}",
+                label_alt= "{%d-%m-%y %H:%M:%S %Z}",
+                timezones= ["Europe/Amsterdam", "America/New_York"],
                 update_interval=1000,
                 callbacks={
                     'on_left': 'do_nothing',
@@ -114,6 +124,8 @@ class DropdownWidget(BaseWidget):
             from core.widgets.yasb.disk import DiskWidget
             return DiskWidget(
                 label="\ue266 Disk:{disk[usage]}%",
+                label_alt= "\udb80\udeca {volume_label}{space[used][gb]:.1f}GB / {space[total][gb]:.1f}GB",
+                volume_label= "C:",
                 update_interval=10000,
                 callbacks={
                     'on_left': 'do_nothing',
@@ -125,6 +137,7 @@ class DropdownWidget(BaseWidget):
             from core.widgets.yasb.traffic import TrafficWidget
             return TrafficWidget(
                 label="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
+                label_alt="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
                 update_interval=2000,
                 callbacks={
                     'on_left': 'do_nothing',
