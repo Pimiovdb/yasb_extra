@@ -1,6 +1,6 @@
 import logging
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMenu, QPushButton, QListView, QWidgetAction
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QIcon
 from core.widgets.base import BaseWidget
 from core.validation.widgets.yasb.dropdown import VALIDATION_SCHEMA
 
@@ -17,7 +17,9 @@ class DropdownWidget(BaseWidget):
         
         self._items = items
         self._button = QPushButton("\udb83\ude6f")
+        self._button.setProperty('class', 'dropdown-button')
         self._menu = QMenu(self._button)
+        self._menu.setProperty('class', 'dropdown-menu-container')
         self._populate_menu()
         self._button.setMenu(self._menu)
         self.widget_layout.addWidget(self._button)
@@ -36,6 +38,7 @@ class DropdownWidget(BaseWidget):
             widget_instance = self._create_widget_instance(widget_name)
             widget_action = QWidgetAction(self._menu)
             widget_action.setDefaultWidget(widget_instance)
+            widget_action.setProperty('class', 'dropdown-menu-widget')
             self._menu.addAction(widget_action)
 
     def _create_widget_instance(self, widget_name):

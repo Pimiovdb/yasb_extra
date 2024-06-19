@@ -85,3 +85,29 @@
 .memory-widget .label.status-high {
   color: #d15142;
 }
+
+
+.dropdown-menu-container {
+  background: #242424;  /*testing*/
+  border-radius: 5px;
+  /* width: 100px; */
+}
+
+.dropdown-button {
+  color: #242424;
+  width: 30px;
+  border-radius: 5px;
+
+}
+.dropdown-button::menu-indicator {
+  height: 0;
+  width: 5px;
+}
+
+
+.dropdown-menu-widget { /*not working, taking over styling from bar widget*/
+  color: red;
+  background: blue;  /*testing*/
+  width: 90px;
+  border-radius: 5px;
+}
