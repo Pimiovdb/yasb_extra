@@ -88,6 +88,72 @@ class DropdownWidget(BaseWidget):
                     'on_right': 'exec cmd.exe /c start ms-settings:network'
                 }
             )
+        elif widget_name == "battery":
+            from core.widgets.yasb.battery import BatteryWidget
+            return BatteryWidget(
+                label="\ue266 Battery:{battery[percent]}%",
+                update_interval=10000,
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'do_nothing'
+                }
+            )
+        elif widget_name == "clock":
+            from core.widgets.yasb.clock import ClockWidget
+            return ClockWidget(
+                label="{time}",
+                update_interval=1000,
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'do_nothing'
+                }
+            )
+        elif widget_name == "disk":
+            from core.widgets.yasb.disk import DiskWidget
+            return DiskWidget(
+                label="\ue266 Disk:{disk[usage]}%",
+                update_interval=10000,
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'exec cmd.exe /c start ms-settings:storagesense'
+                }
+            )
+        elif widget_name == "traffic":
+            from core.widgets.yasb.traffic import TrafficWidget
+            return TrafficWidget(
+                label="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
+                update_interval=2000,
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'exec cmd.exe /c start ms-settings:network'
+                }
+            )
+        elif widget_name == "wifi":
+            from core.widgets.yasb.wifi import WifiWidget
+            return WifiWidget(
+                label="\uf1eb {wifi[ssid]}",
+                update_interval=5000,
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'exec cmd.exe /c start ms-settings:network-wifi'
+                }
+            )
+        elif widget_name == "active_window":
+            from core.widgets.yasb.active_window import ActiveWindowWidget
+            return ActiveWindowWidget(
+                label="{active_window[title]}",
+                update_interval=1000,
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'do_nothing'
+                }
+            )
         else:
             raise ValueError(f"Unknown widget: {widget_name}")
 
