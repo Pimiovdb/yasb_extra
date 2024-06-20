@@ -53,7 +53,7 @@ bars:
     widgets:
       left:   ["open_startmenu", "komorebi_workspaces", "komorebi_active_layout", "ip_info"]
       center: ["clock", "weather"]
-      right:  [ "dropdown_menu", "terminal_button", "explorer_button",  "volume", "cpu", "memory", "wifi", "battery"]
+      right:  [ "dropdown_menu", "terminal_button", "explorer_button", "volume", "wifi", "battery"]
 
   monitor-bar:
     enabled: true
@@ -80,7 +80,7 @@ bars:
     widgets:
       left:   ["komorebi_workspaces", "komorebi_active_layout", "active_window"]
       center: ["clock", "weather"]
-      right:  ["terminal_button", "explorer_button", "ip_info", "volume", "disk", "cpu", "memory", "wifi", "battery"]
+      right:  ["volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
 
 widgets:
   active_window:
@@ -298,7 +298,7 @@ widgets:
     type: "yasb.dropdown.DropdownWidget"
     options:
       items:
-        "1": "cpu"
+        "1": "volume"
         "2": "memory"
         "3": "volume"
       update_interval: 5000
