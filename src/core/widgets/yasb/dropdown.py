@@ -20,19 +20,6 @@ class DropdownWidget(BaseWidget):
         self._button.setProperty('class', 'dropdown-button')
         self._menu = QMenu(self._button)
         self._menu.setProperty('class', 'dropdown-menu-container')
-        self._menu.setStyleSheet("""
-            QMenu
-            {
-                color: red;
-                background: blue;
-                background-color: white;                 
-            }
-            QMenu::item
-            {
-                color: yellow;
-                background: orange;              
-            }
-        """)
         self._populate_menu()
         self._button.setMenu(self._menu)
         self.widget_layout.addWidget(self._button)
@@ -57,7 +44,7 @@ class DropdownWidget(BaseWidget):
     def _create_widget_instance(self, widget_name):
         # Correct import paths based on your project structure
         if widget_name == "cpu":
-            from core.widgets.yasb.cpu import CpuWidget
+            from core.widgets.dropdown.cpu import CpuWidget
             return CpuWidget(
                 label="\ue266 CPU:{info[percent][total]}%",
                 label_alt="CPU:{info[histograms][cpu_percent]}",
@@ -73,7 +60,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "memory":
-            from core.widgets.yasb.memory import MemoryWidget
+            from core.widgets.dropdown.memory import MemoryWidget
             return MemoryWidget(
                 label="\ue266 RAM:{virtual_mem_percent}%",
                 label_alt="\ue266 RAM:{virtual_mem_free}",
@@ -90,7 +77,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "volume":
-            from core.widgets.yasb.volume import VolumeWidget
+            from core.widgets.dropdown.volume import VolumeWidget
             return VolumeWidget(
                 label="\uf028 {volume[percent]}",
                 label_alt="\uf028 {volume[percent]}",
@@ -102,7 +89,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "battery":
-            from core.widgets.yasb.battery import BatteryWidget
+            from core.widgets.dropdown.battery import BatteryWidget
             return BatteryWidget(
                 label="\ue266 Battery:{battery[percent]}%",
                 label_alt="{percent}%",
@@ -121,7 +108,7 @@ class DropdownWidget(BaseWidget):
                 callbacks={'on_left': 'do_nothing', 'on_middle': 'do_nothing', 'on_right': 'do_nothing'}
             )
         elif widget_name == "clock":
-            from core.widgets.yasb.clock import ClockWidget
+            from core.widgets.dropdown.clock import ClockWidget
             return ClockWidget(
                 label="{time}",
                 label_alt= "{%d-%m-%y %H:%M:%S %Z}",
@@ -134,7 +121,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "disk":
-            from core.widgets.yasb.disk import DiskWidget
+            from core.widgets.dropdown.disk import DiskWidget
             return DiskWidget(
                 label="\ue266 Disk:{disk[usage]}%",
                 label_alt= "\udb80\udeca {volume_label}{space[used][gb]:.1f}GB / {space[total][gb]:.1f}GB",
@@ -147,7 +134,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "traffic":
-            from core.widgets.yasb.traffic import TrafficWidget
+            from core.widgets.dropdown.traffic import TrafficWidget
             return TrafficWidget(
                 label="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
                 label_alt="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
@@ -159,7 +146,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "wifi":
-            from core.widgets.yasb.wifi import WifiWidget
+            from core.widgets.dropdown.wifi import WifiWidget
             return WifiWidget(
                 label="\uf1eb {wifi[ssid]}",
                 update_interval=5000,
@@ -170,7 +157,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "active_window":
-            from core.widgets.yasb.active_window import ActiveWindowWidget
+            from core.widgets.dropdown.active_window import ActiveWindowWidget
             return ActiveWindowWidget(
                 label="{active_window[title]}",
                 update_interval=1000,
