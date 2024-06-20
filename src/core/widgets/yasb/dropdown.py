@@ -23,18 +23,21 @@ class DropdownWidget(BaseWidget):
 
         self._menu.setStyleSheet("""
             QMenu{
-                color: #4e4c4c;
+                background: transparent;
                 border-radius: 5px;
+                height: 97;
             }
             QMenu::item .widget{
-                margin: 5px;
+                margin-top: 5px;
+                margin-right: 5px;
+
             }
             QMenu::item .label{
                 background: #bdae93;
                 color: #242424;
             }
             QMenu::item{
-                
+
             }
         """)
         self._populate_menu()
