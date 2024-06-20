@@ -20,6 +20,19 @@ class DropdownWidget(BaseWidget):
         self._button.setProperty('class', 'dropdown-button')
         self._menu = QMenu(self._button)
         self._menu.setProperty('class', 'dropdown-menu-container')
+        self._menu.setStyleSheet("""
+            QMenu
+            {
+                color: red;
+                background: blue;
+                background-color: white;                 
+            }
+            QMenu::item
+            {
+                color: yellow;
+                background: orange;              
+            }
+        """)
         self._populate_menu()
         self._button.setMenu(self._menu)
         self.widget_layout.addWidget(self._button)
