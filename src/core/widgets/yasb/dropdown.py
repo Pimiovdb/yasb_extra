@@ -146,7 +146,7 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "disk":
             from core.widgets.dropdown.disk import DiskWidget
             return DiskWidget(
-                label="{volume_label} {used_percent}%",
+                label="\udb80\udeca {volume_label} {used_percent}%",
                 label_alt="Disk: {used_percent}% used of {total_gb}GB ({free_gb}GB free)",
                 volume_label="C:",
                 update_interval=10000,
@@ -171,7 +171,7 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "wifi":
             from core.widgets.dropdown.wifi import WifiWidget
             return WifiWidget(
-                label="WiFi: {wifi_name} {wifi_icon}",
+                label="{wifi_icon} {wifi_name}",
                 label_alt="{wifi_strength}% {wifi_name}",
                 update_interval=1000,
                 wifi_icons=['\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb'],  # Example icons
