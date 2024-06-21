@@ -180,8 +180,7 @@ class DropdownWidget(BaseWidget):
                 }
             )
         elif widget_name == "active_window":
-            from core.widgets.dropdown.active_window import ActiveWindowWidget
-            from core.widgets.dropdown.active_window import IGNORED_TITLES, IGNORED_CLASSES, IGNORED_PROCESSES
+            from core.widgets.dropdown.active_window import ActiveWindowWidget , IGNORED_TITLES, IGNORED_CLASSES, IGNORED_PROCESSES
             return ActiveWindowWidget(
                 label="Window: {title} ({process})",
                 label_alt="{title}",

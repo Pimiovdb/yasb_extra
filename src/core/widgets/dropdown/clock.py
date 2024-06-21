@@ -3,7 +3,7 @@ import pytz
 from core.widgets.base import BaseWidget
 from core.validation.widgets.yasb.clock import VALIDATION_SCHEMA
 from PyQt6.QtWidgets import QLabel
-from datetime import datetime
+from datetime import datetime, timezone
 from tzlocal import get_localzone_name
 from itertools import cycle
 import logging
@@ -56,7 +56,8 @@ class ClockWidget(BaseWidget):
 
     def _get_clock_info(self) -> dict:
         try:
-            datetime_now = pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone(self._active_tz))
+            # Get the current time in UTC and then convert it to the active timezone
+            datetime_now = datetime.now(timezone.utc).astimezone(pytz.timezone(self._active_tz))
             formatted_time = datetime_now.strftime(self._datetime_format)
         except Exception as e:
             logging.exception("Failed to retrieve updated clock info")
@@ -73,14 +74,9 @@ class ClockWidget(BaseWidget):
         active_label_formatted = active_label_content
 
         try:
-            datetime_format_search = re.search(r'\{(.*?)}', active_label_content)
-            if datetime_format_search:
-                self._datetime_format = datetime_format_search.group(1)
-                datetime_format_str = datetime_format_search.group()
-            else:
-                self._datetime_format = None
-                datetime_format_str = ""
-            
+            # Set default datetime format if not already set
+            self._datetime_format = '%Y-%m-%d %H:%M:%S'
+
             clock_info = self._get_clock_info()
 
             label_options = [
@@ -91,13 +87,11 @@ class ClockWidget(BaseWidget):
             for fmt_str, value in label_options:
                 active_label_formatted = active_label_formatted.replace(fmt_str, str(value))
 
-            if self._datetime_format:
-                active_label_formatted = active_label_formatted.replace(datetime_format_str, clock_info['formatted_time'])
 
             active_label.setText(active_label_formatted)
-        except Exception:
+        except Exception as e:
             active_label.setText(active_label_content)
-            logging.exception("Failed to retrieve updated clock info")
+            logging.exception("Failed to retrieve updated clock info: %s", str(e))
 
     def _next_timezone(self):
         self._active_tz = next(self._timezones)
