@@ -4,6 +4,7 @@ from PyQt6.QtGui import QAction, QIcon
 from core.widgets.base import BaseWidget
 from core.validation.widgets.yasb.dropdown import VALIDATION_SCHEMA
 
+
 class DropdownWidget(BaseWidget):
     validation_schema = VALIDATION_SCHEMA
 
@@ -62,17 +63,17 @@ class DropdownWidget(BaseWidget):
             self._menu.addAction(widget_action)
 
     def _create_widget_instance(self, widget_name):
-        # Correct import paths based on your project structure
+
         if widget_name == "cpu":
             from core.widgets.dropdown.cpu import CpuWidget
             return CpuWidget(
-                label="\ue266 CPU:{info[percent][total]}%",
-                label_alt="CPU:{info[histograms][cpu_percent]}",
+                label="\ue266 CPU:{cpu_percent_total}%",
+                label_alt="CPU:{cpu_percent_total}",
                 histogram_icons=[
                     '\u2581', '\u2582', '\u2583', '\u2584', '\u2585', '\u2586', '\u2587', '\u2588'
                 ],
-                histogram_num_columns=20,
-                update_interval=1000,
+                histogram_num_columns=5,
+                update_interval=2000,
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
@@ -111,8 +112,8 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "battery":
             from core.widgets.dropdown.battery import BatteryWidget
             return BatteryWidget(
-                label="\ue266 Battery:{battery[percent]}%",
-                label_alt="{percent}%",
+                label="{icon} Battery:{battery_percent}%",
+                label_alt="{icon} {battery_percent}%",
                 time_remaining_natural=True,
                 charging_options={'icon_format': "{charging_icon} {icon}", 'blink_charging_icon': False},
                 status_thresholds={'critical': 10, 'low': 25, 'medium': 75, 'high': 95, 'full': 100},
@@ -130,10 +131,10 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "clock":
             from core.widgets.dropdown.clock import ClockWidget
             return ClockWidget(
-                label="{time}",
-                label_alt= "{%d-%m-%y %H:%M:%S %Z}",
-                timezones= ["Europe/Amsterdam", "America/New_York"],
+                label="Time: {formatted_time} ({timezone})",
+                label_alt="{formatted_time}",
                 update_interval=1000,
+                timezones=['UTC', 'America/New_York', 'Europe/London'],
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
@@ -143,49 +144,61 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "disk":
             from core.widgets.dropdown.disk import DiskWidget
             return DiskWidget(
-                label="\ue266 Disk:{disk[usage]}%",
-                label_alt= "\udb80\udeca {volume_label}{space[used][gb]:.1f}GB / {space[total][gb]:.1f}GB",
-                volume_label= "C:",
+                label="{volume_label} {used_percent}%",
+                label_alt="Disk: {used_percent}% used of {total_gb}GB ({free_gb}GB free)",
+                volume_label="C:",
                 update_interval=10000,
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
-                    'on_right': 'exec cmd.exe /c start ms-settings:storagesense'
+                    'on_right': 'do_nothing'
                 }
             )
         elif widget_name == "traffic":
             from core.widgets.dropdown.traffic import TrafficWidget
             return TrafficWidget(
-                label="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
-                label_alt="\uf0ab {network[download_speed]} \uf0aa {network[upload_speed]}",
-                update_interval=2000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'exec cmd.exe /c start ms-settings:network'
-                }
-            )
-        elif widget_name == "wifi":
-            from core.widgets.dropdown.wifi import WifiWidget
-            return WifiWidget(
-                label="\uf1eb {wifi[ssid]}",
-                update_interval=5000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'exec cmd.exe /c start ms-settings:network-wifi'
-                }
-            )
-        elif widget_name == "active_window":
-            from core.widgets.dropdown.active_window import ActiveWindowWidget
-            return ActiveWindowWidget(
-                label="{active_window[title]}",
+                label="Up: {upload_speed} Down: {download_speed}",
+                label_alt="{upload_speed}/{download_speed}",
                 update_interval=1000,
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
                     'on_right': 'do_nothing'
                 }
+            )
+        elif widget_name == "wifi":
+            from core.widgets.dropdown.wifi import WifiWidget
+            return WifiWidget(
+                label="WiFi: {wifi_name} {wifi_icon}",
+                label_alt="{wifi_strength}% {wifi_name}",
+                update_interval=1000,
+                wifi_icons=['\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb'],  # Example icons
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'do_nothing'
+                }
+            )
+        elif widget_name == "active_window":
+            from core.widgets.dropdown.active_window import ActiveWindowWidget
+            from core.widgets.dropdown.active_window import IGNORED_TITLES, IGNORED_CLASSES, IGNORED_PROCESSES
+            return ActiveWindowWidget(
+                label="Window: {title} ({process})",
+                label_alt="{title}",
+                callbacks={
+                    'on_left': 'do_nothing',
+                    'on_middle': 'do_nothing',
+                    'on_right': 'do_nothing'
+                },
+                label_no_window="No active window",
+                ignore_window={
+                    'titles': IGNORED_TITLES,
+                    'classes': IGNORED_CLASSES,
+                    'processes': IGNORED_PROCESSES
+                },
+                monitor_exclusive=True,
+                max_length=30,
+                max_length_ellipsis="..."
             )
         else:
             raise ValueError(f"Unknown widget: {widget_name}")

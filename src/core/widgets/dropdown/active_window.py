@@ -3,10 +3,10 @@ from settings import APP_BAR_TITLE
 from core.utils.win32.windows import WinEvent
 from core.widgets.base import BaseWidget
 from core.event_service import EventService
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QTimer
 from PyQt6.QtWidgets import QLabel
 from core.validation.widgets.yasb.active_window import VALIDATION_SCHEMA
-from core.utils.win32.utilities import get_hwnd_info
+from core.utils.win32.utilities import get_hwnd_info, get_foreground_window
 
 IGNORED_TITLES = ['', ' ']
 IGNORED_CLASSES = ['WorkerW']
@@ -19,17 +19,9 @@ IGNORED_YASB_CLASSES = [
     'Qt621QWindowToolSaveBits'
 ]
 
-try:
-    from core.utils.win32.event_listener import SystemEventListener
-except ImportError:
-    SystemEventListener = None
-    logging.warning("Failed to load Win32 System Event Listener")
-
-
 class ActiveWindowWidget(BaseWidget):
     foreground_change = pyqtSignal(int, WinEvent)
     validation_schema = VALIDATION_SCHEMA
-    event_listener = SystemEventListener
 
     def __init__(
             self,
@@ -40,97 +32,91 @@ class ActiveWindowWidget(BaseWidget):
             ignore_window: dict[str, list[str]],
             monitor_exclusive: bool,
             max_length: int,
-            max_length_ellipsis: str
+            max_length_ellipsis: str,
+            update_interval: int = 1000  # Add update_interval to use with the timer
     ):
         super().__init__(class_name="dropdown-active-window-widget")
 
         self._win_info = None
-        self._show_alt = False
-        self._label = label
-        self._label_alt = label_alt
+        self._show_alt_label = False
+        self._label_content = label
+        self._label_alt_content = label_alt
         self._active_label = label
         self._label_no_window = label_no_window
         self._monitor_exclusive = monitor_exclusive
         self._max_length = max_length
         self._max_length_ellipsis = max_length_ellipsis
+        self._ignore_window = ignore_window
         self._event_service = EventService()
+
         self._window_title_text = QLabel()
         self._window_title_text.setProperty("class", "label")
         self._window_title_text.setText(self._label_no_window)
-
-        self._ignore_window = ignore_window
-        self._ignore_window['classes'] += IGNORED_CLASSES
-        self._ignore_window['processes'] += IGNORED_PROCESSES
-        self._ignore_window['titles'] += IGNORED_TITLES
-
         self.widget_layout.addWidget(self._window_title_text)
-        self.register_callback("toggle_label", self._toggle_title_text)
 
-        if not callbacks:
-            callbacks = {
-                "on_left": "toggle_label",
-                "on_middle": "do_nothing",
-                "on_right": "toggle_label"
-            }
+        self.register_callback("toggle_label", self._toggle_label)
+        self.register_callback("update_label", self._update_label)
 
         self.callback_left = callbacks['on_left']
         self.callback_right = callbacks['on_right']
         self.callback_middle = callbacks['on_middle']
+        self.callback_timer = "update_label"
 
-        self.foreground_change.connect(self._on_focus_change_event)
-        self._event_service.register_event(WinEvent.EventSystemForeground, self.foreground_change)
-        self._event_service.register_event(WinEvent.EventSystemMoveSizeEnd, self.foreground_change)
-        self._event_service.register_event(WinEvent.EventSystemCaptureEnd, self.foreground_change)
+        self._start_timer(update_interval)
 
-    def _toggle_title_text(self) -> None:
-        self._show_alt = not self._show_alt
-        self._active_label = self._label_alt if self._show_alt else self._label
+    def _toggle_label(self):
+        self._show_alt_label = not self._show_alt_label
+        self._active_label = self._label_alt_content if self._show_alt_label else self._label_content
         self._update_text()
 
-    def _on_focus_change_event(self, hwnd: int, event: WinEvent) -> None:
+    def _get_active_window_info(self) -> dict:
+        hwnd = get_foreground_window()
         win_info = get_hwnd_info(hwnd)
         if (not win_info or not hwnd or
                 not win_info['title'] or
                 win_info['title'] in IGNORED_YASB_TITLES or
                 win_info['class_name'] in IGNORED_YASB_CLASSES):
-            return
+            return {
+                'title': 'N/A',
+                'process': 'N/A',
+                'class_name': 'N/A'
+            }
 
-        monitor_name = win_info['monitor_info'].get('device', None)
+        if self._monitor_exclusive and self.screen().name() != win_info['monitor_info'].get('device', None):
+            return {
+                'title': 'N/A',
+                'process': 'N/A',
+                'class_name': 'N/A'
+            }
 
-        if self._monitor_exclusive and self.screen().name() != monitor_name:
-            self._window_title_text.hide()
-        else:
-            self._update_window_title(hwnd, win_info, event)
+        if self._max_length and len(win_info['title']) > self._max_length:
+            win_info['title'] = f"{win_info['title'][:self._max_length]}{self._max_length_ellipsis}"
 
-    def _update_window_title(self, hwnd: int, win_info: dict, event: WinEvent) -> None:
+        return win_info
+
+    def _update_label(self):
         try:
-            title = win_info['title']
-            process = win_info['process']
-            class_name = win_info['class_name']
+            active_window_info = self._get_active_window_info()
 
-            if (title.strip() in self._ignore_window['titles'] or
-                    class_name in self._ignore_window['classes'] or
-                    process in self._ignore_window['processes']):
-                if not self._label_no_window:
-                    return self._window_title_text.hide()
-            else:
-                if self._max_length and len(win_info['title']) > self._max_length:
-                    truncated_title = f"{win_info['title'][:self._max_length]}{self._max_length_ellipsis}"
-                    win_info['title'] = truncated_title
-                    self._window_title_text.setText(self._label_no_window)
+            label_options = [
+                ("{title}", active_window_info['title']),
+                ("{process}", active_window_info['process']),
+                ("{class_name}", active_window_info['class_name']),
+            ]
 
-                self._win_info = win_info
-                self._update_text()
+            active_label_formatted = self._active_label
+            for fmt_str, value in label_options:
+                active_label_formatted = active_label_formatted.replace(fmt_str, str(value))
 
-                if self._window_title_text.isHidden():
-                    self._window_title_text.show()
-        except Exception:
-            logging.exception(
-                f"Failed to update active window title for window with HWND {hwnd} emitted by event {event}"
-            )
-
-    def _update_text(self):
-        try:
-            self._window_title_text.setText(self._active_label.format(win=self._win_info))
+            self._window_title_text.setText(active_label_formatted)
         except Exception:
             self._window_title_text.setText(self._active_label)
+            logging.exception("Failed to retrieve updated active window info")
+
+    def _update_text(self):
+        self._update_label()
+
+    def _start_timer(self, update_interval: int):
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self._update_text)
+        self.timer.start(update_interval)
