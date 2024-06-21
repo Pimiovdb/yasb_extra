@@ -299,9 +299,19 @@ widgets:
     options:
       items:
         "1": "volume"
-        "2": "disk"
-        "3": "clock"
-      update_interval: 5000
+        "2": "memory"
+        "3": "cpu"
+        "4": "disk"
+        "5": "wifi"
+        "6": "clock"
+      widths:
+        "1": 100
+        "2": 150
+        "3": 120
+        "4": 180
+        "5": 130
+        "6": 160
+      update_interval: 30000
       callbacks:
         on_left: "do_nothing"
         on_middle: "do_nothing"

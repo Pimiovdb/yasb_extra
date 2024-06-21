@@ -1,9 +1,21 @@
 import logging
-from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMenu, QPushButton, QListView, QWidgetAction
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMenu, QPushButton, QListView, QWidgetAction, QGridLayout
 from PyQt6.QtGui import QAction, QIcon
 from core.widgets.base import BaseWidget
 from core.validation.widgets.yasb.dropdown import VALIDATION_SCHEMA
 
+class DropdownMenu(QWidget):
+    def __init__(self, items, widths):
+        super().__init__()
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
+        self.populate_grid(items, widths)
+
+    def populate_grid(self, items, widths):
+        positions = [(i, j) for i in range(3) for j in range(3)]
+        for position, (widget, width) in zip(positions, zip(items, widths)):
+            widget.setFixedWidth(width)
+            self.layout.addWidget(widget, *position)
 
 class DropdownWidget(BaseWidget):
     validation_schema = VALIDATION_SCHEMA
@@ -11,12 +23,14 @@ class DropdownWidget(BaseWidget):
     def __init__(
             self,
             items: dict[str, str],
+            widths: dict[str, int],  # Added widths parameter
             update_interval: int,
             callbacks: dict[str, str]
     ):
         super().__init__(update_interval, class_name="dropdown-widget")
         
         self._items = items
+        self._widths = widths
         self._button = QPushButton("\udb83\ude6f")
         self._button.setProperty('class', 'dropdown-button')
         self._menu = QMenu(self._button)
@@ -30,7 +44,6 @@ class DropdownWidget(BaseWidget):
             QMenu::item .widget{
                 margin-top: 5px;
                 margin-right: 5px;
-                
             }
             QMenu::item .label{
                 background: #bdae93;
@@ -40,7 +53,6 @@ class DropdownWidget(BaseWidget):
                 background: #fbf1c7;
             }
             QMenu::item{
-                
             }
         """)
         self._populate_menu()
@@ -57,15 +69,14 @@ class DropdownWidget(BaseWidget):
         self.start_timer()
 
     def _populate_menu(self):
-        for name, widget_name in self._items.items():
-            widget_instance = self._create_widget_instance(widget_name)
-            widget_action = QWidgetAction(self._menu)
-            widget_action.setDefaultWidget(widget_instance)
-            widget_action.setProperty('class', 'dropdown-menu-widget')
-            self._menu.addAction(widget_action)
+        widgets = [self._create_widget_instance(widget_name) for widget_name in self._items.values()]
+        widths = [self._widths[widget_name] for widget_name in self._items.keys()]
+        menu_widget = DropdownMenu(widgets, widths)
+        widget_action = QWidgetAction(self._menu)
+        widget_action.setDefaultWidget(menu_widget)
+        self._menu.addAction(widget_action)
 
     def _create_widget_instance(self, widget_name):
-
         if widget_name == "cpu":
             from core.widgets.dropdown.cpu import CpuWidget
             return CpuWidget(
