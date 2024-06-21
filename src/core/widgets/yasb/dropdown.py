@@ -26,19 +26,21 @@ class DropdownWidget(BaseWidget):
             QMenu{
                 background: transparent;
                 border-radius: 5px;
-                height: 97;
             }
             QMenu::item .widget{
                 margin-top: 5px;
                 margin-right: 5px;
-
+                
             }
             QMenu::item .label{
                 background: #bdae93;
                 color: #242424;
             }
+            QMenu::item .label:hover{
+                background: #fbf1c7;
+            }
             QMenu::item{
-
+                
             }
         """)
         self._populate_menu()

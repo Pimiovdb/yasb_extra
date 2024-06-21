@@ -299,8 +299,8 @@ widgets:
     options:
       items:
         "1": "volume"
-        "2": "memory"
-        "3": "volume"
+        "2": "disk"
+        "3": "clock"
       update_interval: 5000
       callbacks:
         on_left: "do_nothing"
