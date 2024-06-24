@@ -23,7 +23,7 @@ class DropdownWidget(BaseWidget):
     def __init__(
             self,
             items: dict[str, str],
-            widths: dict[str, int],  # Added widths parameter
+            widths: dict[str, int],
             update_interval: int,
             callbacks: dict[str, str]
     ):
@@ -86,7 +86,7 @@ class DropdownWidget(BaseWidget):
                     '\u2581', '\u2582', '\u2583', '\u2584', '\u2585', '\u2586', '\u2587', '\u2588'
                 ],
                 histogram_num_columns=5,
-                update_interval=2000,
+                update_interval=1000,
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
@@ -98,7 +98,7 @@ class DropdownWidget(BaseWidget):
             return MemoryWidget(
                 label="\ue266 RAM:{virtual_mem_percent}%",
                 label_alt="\ue266 RAM:{virtual_mem_free}",
-                update_interval=2000,
+                update_interval=1000,
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
@@ -115,7 +115,7 @@ class DropdownWidget(BaseWidget):
             return VolumeWidget(
                 label="\uf028 {volume[percent]}",
                 label_alt="\uf028 {volume[percent]}",
-                update_interval=500,
+                update_interval=100,
                 callbacks={
                     'on_left': 'do_nothing',
                     'on_middle': 'do_nothing',
@@ -182,7 +182,7 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "wifi":
             from core.widgets.dropdown.wifi import WifiWidget
             return WifiWidget(
-                label="{wifi_icon} {wifi_name}",
+                label="{wifi_icon} :{wifi_name}",
                 label_alt="{wifi_strength}% {wifi_name}",
                 update_interval=1000,
                 wifi_icons=['\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb'],  # Example icons
