@@ -1,6 +1,5 @@
 import logging
-from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMenu, QPushButton, QListView, QWidgetAction, QGridLayout
-from PyQt6.QtGui import QAction, QIcon
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMenu, QPushButton, QGridLayout, QWidgetAction
 from core.widgets.base import BaseWidget
 from core.validation.widgets.yasb.dropdown import VALIDATION_SCHEMA
 
@@ -20,15 +19,9 @@ class DropdownMenu(QWidget):
 class DropdownWidget(BaseWidget):
     validation_schema = VALIDATION_SCHEMA
 
-    def __init__(
-            self,
-            items: dict[str, str],
-            widths: dict[str, int],
-            update_interval: int,
-            callbacks: dict[str, str]
-    ):
+    def __init__(self, items: dict[str, dict], widths: dict[str, int], update_interval: int, callbacks: dict[str, str]):
         super().__init__(update_interval, class_name="dropdown-widget")
-        
+
         self._items = items
         self._widths = widths
         self._button = QPushButton("\udb83\ude6f")
@@ -69,149 +62,44 @@ class DropdownWidget(BaseWidget):
         self.start_timer()
 
     def _populate_menu(self):
-        widgets = [self._create_widget_instance(widget_name) for widget_name in self._items.values()]
+        widgets = [self._create_widget_instance(item['widget'], item['options']) for item in self._items.values()]
         widths = [self._widths[widget_name] for widget_name in self._items.keys()]
         menu_widget = DropdownMenu(widgets, widths)
         widget_action = QWidgetAction(self._menu)
         widget_action.setDefaultWidget(menu_widget)
         self._menu.addAction(widget_action)
 
-    def _create_widget_instance(self, widget_name):
+    def _create_widget_instance(self, widget_name, options):
         if widget_name == "cpu":
             from core.widgets.dropdown.cpu import CpuWidget
-            return CpuWidget(
-                label="\ue266 CPU:{cpu_percent_total}%",
-                label_alt="CPU:{cpu_percent_total}",
-                histogram_icons=[
-                    '\u2581', '\u2582', '\u2583', '\u2584', '\u2585', '\u2586', '\u2587', '\u2588'
-                ],
-                histogram_num_columns=5,
-                update_interval=1000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                }
-            )
+            return CpuWidget(**options)
         elif widget_name == "memory":
             from core.widgets.dropdown.memory import MemoryWidget
-            return MemoryWidget(
-                label="\ue266 RAM:{virtual_mem_percent}%",
-                label_alt="\ue266 RAM:{virtual_mem_free}",
-                update_interval=1000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'exec cmd /c Taskmgr'
-                },
-                memory_thresholds={
-                    'low': 25,
-                    'medium': 50,
-                    'high': 90
-                }
-            )
+            return MemoryWidget(**options)
         elif widget_name == "volume":
             from core.widgets.dropdown.volume import VolumeWidget
-            return VolumeWidget(
-                label="\uf028 {volume[percent]}",
-                label_alt="\uf028 {volume[percent]}",
-                update_interval=100,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'exec cmd.exe /c start ms-settings:network'
-                }
-            )
+            return VolumeWidget(**options)
         elif widget_name == "battery":
             from core.widgets.dropdown.battery import BatteryWidget
-            return BatteryWidget(
-                label="{icon} Battery:{battery_percent}%",
-                label_alt="{icon} {battery_percent}%",
-                time_remaining_natural=True,
-                charging_options={'icon_format': "{charging_icon} {icon}", 'blink_charging_icon': False},
-                status_thresholds={'critical': 10, 'low': 25, 'medium': 75, 'high': 95, 'full': 100},
-                status_icons={
-                    'icon_charging': '\uf0e7',
-                    'icon_critical': '\udb80\udc83',
-                    'icon_low': '\udb80\udc7a',
-                    'icon_medium': '\udb80\udc7c',
-                    'icon_high': '\udb80\udc80',
-                    'icon_full': '\udb80\udc79'
-                },
-                update_interval=10000,
-                callbacks={'on_left': 'do_nothing', 'on_middle': 'do_nothing', 'on_right': 'do_nothing'}
-            )
+            return BatteryWidget(**options)
         elif widget_name == "clock":
             from core.widgets.dropdown.clock import ClockWidget
-            return ClockWidget(
-                label="Time: {formatted_time} ({timezone})",
-                label_alt="{formatted_time}",
-                update_interval=1000,
-                timezones=['UTC', 'America/New_York', 'Europe/London'],
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                }
-            )
+            return ClockWidget(**options)
         elif widget_name == "disk":
             from core.widgets.dropdown.disk import DiskWidget
-            return DiskWidget(
-                label="\udb80\udeca {volume_label}{used_percent}%",
-                label_alt="Disk: {used_percent}% used of {total_gb}GB ({free_gb}GB free)",
-                volume_label="C:",
-                update_interval=10000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                }
-            )
+            return DiskWidget(**options)
         elif widget_name == "traffic":
             from core.widgets.dropdown.traffic import TrafficWidget
-            return TrafficWidget(
-                label="Up: {upload_speed} Down: {download_speed}",
-                label_alt="{upload_speed}/{download_speed}",
-                update_interval=1000,
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                }
-            )
+            return TrafficWidget(**options)
         elif widget_name == "wifi":
             from core.widgets.dropdown.wifi import WifiWidget
-            return WifiWidget(
-                label="{wifi_icon} :{wifi_name}",
-                label_alt="{wifi_strength}% {wifi_name}",
-                update_interval=1000,
-                wifi_icons=['\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb', '\uf1eb'],  # Example icons
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                }
-            )
+            return WifiWidget(**options)
         elif widget_name == "active_window":
-            from core.widgets.dropdown.active_window import ActiveWindowWidget , IGNORED_TITLES, IGNORED_CLASSES, IGNORED_PROCESSES
-            return ActiveWindowWidget(
-                label="Window: {title} ({process})",
-                label_alt="{title}",
-                callbacks={
-                    'on_left': 'do_nothing',
-                    'on_middle': 'do_nothing',
-                    'on_right': 'do_nothing'
-                },
-                label_no_window="No active window",
-                ignore_window={
-                    'titles': IGNORED_TITLES,
-                    'classes': IGNORED_CLASSES,
-                    'processes': IGNORED_PROCESSES
-                },
-                monitor_exclusive=True,
-                max_length=30,
-                max_length_ellipsis="..."
-            )
+            from core.widgets.dropdown.active_window import ActiveWindowWidget
+            return ActiveWindowWidget(**options)
+        elif widget_name == "ip_info":
+            from core.widgets.dropdown.custom import CustomWidget
+            return CustomWidget(**options)
         else:
             raise ValueError(f"Unknown widget: {widget_name}")
 

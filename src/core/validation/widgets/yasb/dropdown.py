@@ -1,6 +1,6 @@
 DEFAULTS = {
     'items': {},
-    'widths': {},  # Add default widths
+    'widths': {},
     'update_interval': 5000,
     'callbacks': {
         'on_left': "do_nothing",
@@ -13,10 +13,16 @@ VALIDATION_SCHEMA = {
     'items': {
         'type': 'dict',
         'keyschema': {'type': 'string'},
-        'valueschema': {'type': 'string'},
+        'valueschema': {
+            'type': 'dict',
+            'schema': {
+                'widget': {'type': 'string'},
+                'options': {'type': 'dict'}
+            }
+        },
         'default': DEFAULTS['items']
     },
-    'widths': {  # Add widths to validation schema
+    'widths': {
         'type': 'dict',
         'keyschema': {'type': 'string'},
         'valueschema': {'type': 'integer'},

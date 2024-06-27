@@ -1,29 +1,3 @@
-# Configuration for Yasb (Yet Another Status Bar)
-# Author: @denBot
-# Last updated: 21/08/2023
-
-# General Bar Configuration Notes:
-#   - All bars must be defined in within the `bars` section
-#   - Each bar configuration should be defined using a name, e.g. 'Laptop-bar', 'my-awesome-bar', etc.
-#   - Default bar options can be found at: https://github.com/denBot/yasb/blob/main/src/core/validation/bar.py#L1-L10
-
-# General Widget Configuration Notes:
-#   - ALL configured widgets must be defined in within the `widgets` section of this config file
-#   - Each widget configuration should be allocated a unique name, e.g. 'my-widget', 'my-custom-clock', etc.
-#      >  This makes it easier for you to keep track of your configured widgets and add them to your bar(s)
-#   - Each widget should specify a widget `type` - this points to the python class of the widget you are configuring
-#      > For example: type: "yasb.clock.ClockWidget"
-#   - Each widget supports mouse event callback functionality (left, middle, right click).
-#      > The callbacks "do_nothing" and "exec" can be used across any widget which allows them.
-#      > "exec" allows you to run programs from the command-line, where each argument is separated by a space
-#      > "do_nothing" allows you to override default mouse events to do nothing
-#      > "toggle_label" *some widgets* allow you to toggle between two label formats
-#   - Example callbacks:
-#      on_left: "exec wt.exe"  --  run the windows terminal when the widget is left-clicked
-#      on_middle: "do_nothing" -- overrides default widget middle-click behaviour to do nothing
-#      on_right: "exec cmd /c Taskmg" --  open the task manager when the widget is right-clicked
-
-
 watch_stylesheet: true
 watch_config: true
 
@@ -51,13 +25,13 @@ bars:
       bottom: 0
       right: 0
     widgets:
-      left:   ["open_startmenu", "komorebi_workspaces", "komorebi_active_layout", "ip_info"]
-      center: ["clock", "weather"]
-      right:  [ "dropdown_menu", "terminal_button", "explorer_button", "volume", "wifi", "battery"]
+      left: ["open_startmenu", "komorebi_workspaces", "komorebi_active_layout"]
+      center: ["clock"]
+      right: ["dropdown_menu", "terminal_button", "explorer_button", "volume", "wifi", "battery"]
 
   monitor-bar:
     enabled: true
-    screens: ['HP E34m G4']
+    screens: ['HP E34m G4', 'LG TV']
     class_name: "monitor-bar"
     alignment:
       position: "top"
@@ -78,9 +52,9 @@ bars:
       bottom: 0
       right: 0
     widgets:
-      left:   ["komorebi_workspaces", "komorebi_active_layout", "active_window"]
-      center: ["clock", "weather"]
-      right:  ["volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
+      left: ["komorebi_workspaces", "komorebi_active_layout", "active_window"]
+      center: ["clock"]
+      right: ["volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
 
 widgets:
   active_window:
@@ -96,7 +70,7 @@ widgets:
   battery:
     type: "yasb.battery.BatteryWidget"
     options:
-      time_remaining_natural: true 
+      time_remaining_natural: true
       label: "{icon}"
       label_alt: "{percent}%"
       update_interval: 1000
@@ -116,16 +90,15 @@ widgets:
         icon_high: "\udb80\udc80"
         icon_full: "\udb80\udc79"
 
-
   clock:
     type: "yasb.clock.ClockWidget"
     options:
-        label: "{%H:%M:%S %Z}"
-        label_alt: "{%d-%m-%y %H:%M:%S %Z}"
-        timezones: ["Europe/Amsterdam", "America/New_York"]
-        callbacks:
-          on_middle: "exec explorer.exe shell:Appsfolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App"
-          on_right: "next_timezone"
+      label: "{%H:%M:%S %Z}"
+      label_alt: "{%d-%m-%y %H:%M:%S %Z}"
+      timezones: ["Europe/Amsterdam", "America/New_York"]
+      callbacks:
+        on_middle: "exec explorer.exe shell:Appsfolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App"
+        on_right: "next_timezone"
 
   cpu:
     type: "yasb.cpu.CpuWidget"
@@ -148,20 +121,20 @@ widgets:
   memory:
     type: "yasb.memory.MemoryWidget"
     options:
-        label: "\ue266 RAM:{virtual_mem_percent}%"
-        label_alt: "\ue266 RAM:{virtual_mem_free}"
-        update_interval: 2000
-        callbacks:
-          on_right: "exec cmd /c Taskmgr"
+      label: "\ue266 RAM:{virtual_mem_percent}%"
+      label_alt: "\ue266 RAM:{virtual_mem_free}"
+      update_interval: 2000
+      callbacks:
+        on_right: "exec cmd /c Taskmgr"
 
   komorebi_workspaces:
     type: "komorebi.workspaces.WorkspaceWidget"
     options:
-        label_offline: "Komorebi Offline"
-        label_workspace_btn: "{index}"
-        label_default_name: "{index}"
-        label_zero_index: false
-        hide_empty_workspaces: true
+      label_offline: "Komorebi Offline"
+      label_workspace_btn: "{index}"
+      label_default_name: "{index}"
+      label_zero_index: false
+      hide_empty_workspaces: true
 
   komorebi_active_layout:
     type: "komorebi.active_layout.ActiveLayoutWidget"
@@ -187,29 +160,27 @@ widgets:
   wifi:
     type: "yasb.wifi.WifiWidget"
     options:
-        label: "{wifi_icon}"
-        label_alt: "{wifi_icon} {wifi_name}"
-        update_interval: 5000
-        wifi_icons:
-          - "<span style=\"color: #d15142\">\udb82\udd2e</span>"  # 0% strength (no wifi)
-          - "<span style=\"color: #df8a45\">\udb82\udd1f</span>"  # 1-25% strength
-          - "<span style=\"color: #e2b345\">\udb82\udd22</span>"  # 26-50% strength
-          - "<span style=\"color: #b7b85a\">\udb82\udd25</span>"  # 51-75% strength
-          - "<span style=\"color: #5f924d\">\udb82\udd28</span>"  # 76-100% strength. Alternate theming: \uf1eb
-        callbacks:
-          on_middle: "do_nothing"
-          on_right: "exec cmd.exe /c start ms-settings:network"
+      label: "{wifi_icon}"
+      label_alt: "{wifi_icon} {wifi_name}"
+      update_interval: 5000
+      wifi_icons:
+        - "<span style=\"color: #d15142\">\udb82\udd2e</span>"  # 0% strength (no wifi)
+        - "<span style=\"color: #df8a45\">\udb82\udd1f</span>"  # 1-25% strength
+        - "<span style=\"color: #e2b345\">\udb82\udd22</span>"  # 26-50% strength
+        - "<span style=\"color: #b7b85a\">\udb82\udd25</span>"  # 51-75% strength
+        - "<span style=\"color: #5f924d\">\udb82\udd28</span>"  # 76-100% strength. Alternate theming: \uf1eb
+      callbacks:
+        on_middle: "do_nothing"
+        on_right: "exec cmd.exe /c start ms-settings:network"
 
   traffic:
     type: "yasb.traffic.TrafficWidget"
-  options:
+    options:
       label: "\ueb01 \ueab4 {download_speed}"
       label_alt: "\ueb01 \ueab7 {download_speed} | \ueab4 {upload_speed} |"
       update_interval: 1000 # Update interval should be a multiple of 1000
       callbacks:
         on_right: "exec cmd /c Taskmgr"
-
-  # Some custom widgets
 
   explorer_button:
     type: "yasb.custom.CustomWidget"
@@ -222,7 +193,7 @@ widgets:
       callbacks:
         on_left: "exec explorer.exe"
         on_right: "toggle_label"
-  
+
   terminal_button:
     type: "yasb.custom.CustomWidget"
     options:
@@ -233,7 +204,6 @@ widgets:
         run_once: true
       callbacks:
         on_left: "exec wt.exe"
-
 
   ip_info:
     type: "yasb.custom.CustomWidget"
@@ -248,7 +218,7 @@ widgets:
       callbacks:
         on_left: "toggle_label"
         on_middle: "exec cmd /c ncpa.cpl"                           # open network settings
-        on_right: "exec cmd /c start https://ipinfo.io/{data[ip]} " # open ipinfo in browser
+        on_right: "exec cmd /c start https://ipinfo.io/{data[ip]}" # open ipinfo in browser
 
   weather:
     type: "yasb.custom.CustomWidget"
@@ -261,7 +231,7 @@ widgets:
         # run every hour
         run_interval: 3600000
         return_format: "json"
-  
+
   open_startmenu:
     type: "yasb.custom.CustomWidget"
     options:
@@ -276,39 +246,120 @@ widgets:
   volume:
     type: "yasb.volume.VolumeWidget"
     options:
-        label: "\uf028 {volume[percent]}"
-        label_alt: "\uf028 {volume[percent]}"
-        update_interval: 500
-        callbacks:
-          on_middle: "do_nothing"
-          on_right: "exec cmd.exe /c start ms-settings:network"
+      label: "\uf028 {volume[percent]}"
+      label_alt: "\uf028 {volume[percent]}"
+      update_interval: 500
+      callbacks:
+        on_middle: "do_nothing"
+        on_right: "exec cmd.exe /c start ms-settings:network"
 
   disk:
     type: "yasb.disk.DiskWidget"
     options:
-        label: "\udb80\udeca {volume_label}{space[used][percent]:.1f}%"
-        label_alt: "\udb80\udeca {volume_label}{space[used][gb]:.1f}GB / {space[total][gb]:.1f}GB"
-        volume_label: "C:"
-        update_interval: 60000
-        callbacks:
-          on_middle: "do_nothing"
-          on_right: "exec cmd.exe /c start ms-settings:network"
+      label: "\udb80\udeca {volume_label}{space[used][percent]:.1f}%"
+      label_alt: "\udb80\udeca {volume_label}{space[used][gb]:.1f}GB / {space[total][gb]:.1f}GB"
+      volume_label: "C:"
+      update_interval: 60000
+      callbacks:
+        on_middle: "do_nothing"
+        on_right: "exec cmd.exe /c start ms-settings:network"
 
   dropdown_menu:
     type: "yasb.dropdown.DropdownWidget"
     options:
       items:
-        "1": "volume"
-        "2": "cpu"
-        "3": "wifi"
-        "4": "disk"
-        "5": "memory"
-        "6": "clock"
+        "1":
+          widget: "volume"
+          options:
+            label: "\uf028 {volume[percent]}"
+            label_alt: "\uf028 {volume[percent]}"
+            update_interval: 100
+            callbacks:
+              on_left: "do_nothing"
+              on_middle: "do_nothing"
+              on_right: "exec cmd.exe /c start ms-settings:network"
+        "2":
+          widget: "cpu"
+          options:
+            label: "\ue266 CPU:{cpu_percent_total}%"
+            label_alt: "CPU:{cpu_percent_total}"
+            histogram_icons:
+              - '\u2581'
+              - '\u2582'
+              - '\u2583'
+              - '\u2584'
+              - '\u2585'
+              - '\u2586'
+              - '\u2587'
+              - '\u2588'
+            histogram_num_columns: 5
+            update_interval: 1000
+            callbacks:
+              on_left: "do_nothing"
+              on_middle: "do_nothing"
+              on_right: "do_nothing"
+        "3":
+          widget: "wifi"
+          options:
+            label: "{wifi_icon} :{wifi_name}"
+            label_alt: "{wifi_strength}% {wifi_name}"
+            update_interval: 1000
+            wifi_icons:
+              - "\uf1eb"
+              - "\uf1eb"
+              - "\uf1eb"
+              - "\uf1eb"
+              - "\uf1eb"
+            callbacks:
+              on_left: "do_nothing"
+              on_middle: "do_nothing"
+              on_right: "do_nothing"
+        "4":
+          widget: "disk"
+          options:
+            label: "\udb80\udeca {volume_label}{used_percent}%"
+            label_alt: "Disk: {used_percent}% used of {total_gb}GB ({free_gb}GB free)"
+            volume_label: "C:"
+            update_interval: 10000
+            callbacks:
+              on_left: "do_nothing"
+              on_middle: "do_nothing"
+              on_right: "do_nothing"
+        "5":
+          widget: "memory"
+          options:
+            label: "\ue266 RAM:{virtual_mem_percent}%"
+            label_alt: "\ue266 RAM:{virtual_mem_free}"
+            update_interval: 1000
+            callbacks:
+              on_left: "do_nothing"
+              on_middle: "do_nothing"
+              on_right: "exec cmd /c Taskmgr"
+            memory_thresholds:
+              low: 25
+              medium: 50
+              high: 90
+        "6":
+          widget: "ip_info"
+          options:
+            label: "\udb82\ude60 {data[ip]}"
+            label_alt: "\udb82\ude60 [Hidden]"
+            label_max_length: 50
+            class_name: "ip-info-widget"
+            exec_options:
+              run_cmd: "curl.exe https://ipinfo.io"
+              run_interval: 120000
+              return_format: "json"
+              run_once: False
+            callbacks:
+              on_left: "toggle_label"
+              on_middle: "exec cmd /c ncpa.cpl"
+              on_right: "exec cmd /c start https://ipinfo.io/{data[ip]}"
       widths:
         "1": 90
         "2": 135
         "3": 185
-        "4": 135
+        "4": 125
         "5": 135
         "6": 185
       update_interval: 30000
