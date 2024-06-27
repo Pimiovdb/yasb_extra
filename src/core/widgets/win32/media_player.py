@@ -243,6 +243,11 @@ class MediaWidget(BaseWidget):
 
     def _handle_btn_press(self, btn_name):
         session = asyncio.run(media_control.get_current_session())
+
+        if session is None:
+            print("No active media session. Cannot perform the action.")
+            return
+
         callbacks = {
             "prev": session.try_skip_previous_async,
             "next": session.try_skip_next_async,

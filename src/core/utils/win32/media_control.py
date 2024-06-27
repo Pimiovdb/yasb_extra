@@ -11,8 +11,12 @@ class WindowsMediaRepeat(Enum):
     List = 2
 
 async def get_current_session():
-    sessions = await GlobalSystemMediaTransportControlsSessionManager.request_async()
-    return sessions.get_current_session()
+    try:
+        sessions = await GlobalSystemMediaTransportControlsSessionManager.request_async()
+        return sessions.get_current_session()
+    except Exception as e:
+        print(f"Error getting current session: {e}")
+        return None
 
 def props_to_dict(props):
     return {
