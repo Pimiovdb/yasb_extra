@@ -28,8 +28,29 @@
 
 
 
+.media-widget .thumbnail{
 
+}
+.media-widget .label{
 
+}
+.media-widget .media-btn {
+  color: #242424;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.media-btn {
+  background: transparent;
+}
+
+.media-btn:hover {
+
+}
+
+.media-btn.shuffle.active {
+
+}
 
 
 .ws-btn:hover {

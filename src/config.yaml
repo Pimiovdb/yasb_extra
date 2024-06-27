@@ -26,7 +26,7 @@ bars:
       right: 0
     widgets:
       left: ["open_startmenu", "komorebi_workspaces", "komorebi_active_layout"]
-      center: ["clock"]
+      center: ["clock", "media_player"]
       right: ["dropdown_menu", "terminal_button", "explorer_button", "volume", "wifi", "battery"]
 
   monitor-bar:
@@ -253,6 +253,25 @@ widgets:
         on_middle: "do_nothing"
         on_right: "exec cmd.exe /c start ms-settings:network"
 
+  media_player:
+    type: "win32.media_player.MediaWidget"
+    options:
+      label: "{media[title]}"
+      label_alt: "{media[title]} - {media[artist]}"
+      update_interval: 1000
+      layout: ["thumbnail", "label", "play_pause"]
+      keep_thumbnail_aspect_ratio: false
+      icons:
+        shuffle: \uf074"
+        play: "\uf04b"
+        pause: "\uf04c"
+        repeat_off: "\uf2f9"
+        repeat_track: "\uf2f9 (T)"
+        repeat_list: "\uf2f9 (L)"
+        next: "\uf051"
+        prev: "\uf048"
+        close: "\uf00d"
+
   disk:
     type: "yasb.disk.DiskWidget"
     options:
@@ -261,6 +280,7 @@ widgets:
       volume_label: "C:"
       update_interval: 60000
       callbacks:
+        on_left: "toggle_label"
         on_middle: "do_nothing"
         on_right: "exec cmd.exe /c start ms-settings:network"
 
@@ -275,7 +295,7 @@ widgets:
             label_alt: "\uf028 {volume[percent]}"
             update_interval: 100
             callbacks:
-              on_left: "do_nothing"
+              on_left: "toggle_label"
               on_middle: "do_nothing"
               on_right: "exec cmd.exe /c start ms-settings:network"
         "2":
@@ -295,7 +315,7 @@ widgets:
             histogram_num_columns: 5
             update_interval: 1000
             callbacks:
-              on_left: "do_nothing"
+              on_left: "toggle_label"
               on_middle: "do_nothing"
               on_right: "do_nothing"
         "3":
@@ -311,7 +331,7 @@ widgets:
               - "\uf1eb"
               - "\uf1eb"
             callbacks:
-              on_left: "do_nothing"
+              on_left: "toggle_label"
               on_middle: "do_nothing"
               on_right: "do_nothing"
         "4":
@@ -322,7 +342,7 @@ widgets:
             volume_label: "C:"
             update_interval: 10000
             callbacks:
-              on_left: "do_nothing"
+              on_left: "toggle_label"
               on_middle: "do_nothing"
               on_right: "do_nothing"
         "5":
@@ -332,7 +352,7 @@ widgets:
             label_alt: "\ue266 RAM:{virtual_mem_free}"
             update_interval: 1000
             callbacks:
-              on_left: "do_nothing"
+              on_left: "toggle_label"
               on_middle: "do_nothing"
               on_right: "exec cmd /c Taskmgr"
             memory_thresholds:
@@ -356,12 +376,12 @@ widgets:
               on_middle: "exec cmd /c ncpa.cpl"
               on_right: "exec cmd /c start https://ipinfo.io/{data[ip]}"
       widths:
-        "1": 90
+        "1": 125
         "2": 135
-        "3": 185
+        "3": 190
         "4": 125
         "5": 135
-        "6": 185
+        "6": 190
       update_interval: 30000
       callbacks:
         on_left: "do_nothing"

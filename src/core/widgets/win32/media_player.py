@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import QLabel, QPushButton
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QCursor
 
-
 class MediaWidgetButton(QPushButton):
     def __init__(self, button_type: str, button_label: str):
         super().__init__()
@@ -23,10 +22,8 @@ class MediaWidgetButton(QPushButton):
 
         self.setStyleSheet('')
 
-
 async def call_async_callback(callback, *args):
     await callback(*args)
-
 
 class MediaWidget(BaseWidget):
     validation_schema = VALIDATION_SCHEMA
@@ -62,6 +59,8 @@ class MediaWidget(BaseWidget):
         self._next_btn = None
         self._prev_btn = None
         self._close_btn = None
+
+        self.bar = None  # Initialize the bar attribute to None
 
         media_component_builders = {
             "label": self._build_label,
@@ -108,14 +107,17 @@ class MediaWidget(BaseWidget):
         media_info = asyncio.run(media_control.get_media_info())
         playback_info = asyncio.run(media_control.get_playback_info())
 
-        title_artist = f"{media_info['title']} - {media_info['artist']}"
+        try:
+            title_artist = f"{media_info['title']} - {media_info['artist']}"
+        except KeyError:
+            title_artist = "No media - Unknown"
 
-        playback_controls = playback_info['controls']
+        playback_controls = playback_info.get('controls', {})
         is_play_enabled = playback_controls.get('is_play_enabled', False)
 
         if self._playing_media != title_artist and self.bar:
             if self._thumbnail:
-                asyncio.run(self._update_thumbnail(media_info['thumbnail']))
+                asyncio.run(self._update_thumbnail(media_info.get('thumbnail')))
             self._playing_media = title_artist
             self.show()
 
