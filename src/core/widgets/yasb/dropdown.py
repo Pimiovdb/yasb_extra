@@ -100,6 +100,9 @@ class DropdownWidget(BaseWidget):
         elif widget_name == "ip_info":
             from core.widgets.dropdown.custom import CustomWidget
             return CustomWidget(**options)
+        elif widget_name == "media_player":
+            from core.widgets.win32.media_player import MediaWidget
+            return MediaWidget(**options)
         else:
             raise ValueError(f"Unknown widget: {widget_name}")
 
