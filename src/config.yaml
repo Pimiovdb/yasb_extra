@@ -54,16 +54,16 @@ bars:
     widgets:
       left: ["komorebi_workspaces", "komorebi_active_layout", "active_window"]
       center: ["clock"]
-      right: ["volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
+      right: ["weather", "traffic","volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
 
 widgets:
   active_window:
     type: "yasb.active_window.ActiveWindowWidget"
     options:
-      label: "{win[process][name]}"
-      label_alt: "exe='{win[process][name]}' display='{win[monitor_info][device]}'"
+      label: "{title}"
+      label_alt: "{class_name}"
       label_no_window: ""
-      max_length: 48
+      max_length: 30
       max_length_ellipsis: "..."
       monitor_exclusive: false
 
@@ -71,11 +71,12 @@ widgets:
     type: "yasb.battery.BatteryWidget"
     options:
       time_remaining_natural: true
-      label: "{icon}"
-      label_alt: "{percent}%"
+      label: "{icon}{battery_percent}%"
+      label_alt: "{battery_percent}%"
       update_interval: 1000
       charging_options:
         icon_format: "{charging_icon} {icon}"
+        blink_charging_icon: False
       status_thresholds:
         critical: 10
         low: 25
@@ -93,8 +94,8 @@ widgets:
   clock:
     type: "yasb.clock.ClockWidget"
     options:
-      label: "{%H:%M:%S %Z}"
-      label_alt: "{%d-%m-%y %H:%M:%S %Z}"
+      label: "{formatted_time}"
+      label_alt: "{formatted_time} {timezone}"
       timezones: ["Europe/Amsterdam", "America/New_York"]
       callbacks:
         on_middle: "exec explorer.exe shell:Appsfolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App"
@@ -103,8 +104,8 @@ widgets:
   cpu:
     type: "yasb.cpu.CpuWidget"
     options:
-      label: "\ue266 CPU:{info[percent][total]}%"
-      label_alt: "CPU:{info[histograms][cpu_percent]}"
+      label: "\ue266 CPU:{cpu_percent_total}%"
+      label_alt: "CPU:{cpu_freq_max}"
       update_interval: 1000
       histogram_icons:
         - '\u2581' # 0%
@@ -227,7 +228,7 @@ widgets:
       label_alt: "\uf0c2 {data[current_condition][0][weatherDesc][0][value]}"
       class_name: "weather-widget"
       exec_options:
-        run_cmd: "curl.exe  wttr.in/Amsterdam?format=j1"
+        run_cmd: "curl.exe wttr.in/Amsterdam?format=j1"
         # run every hour
         run_interval: 3600000
         return_format: "json"
@@ -275,8 +276,8 @@ widgets:
   disk:
     type: "yasb.disk.DiskWidget"
     options:
-      label: "\udb80\udeca {volume_label}{space[used][percent]:.1f}%"
-      label_alt: "\udb80\udeca {volume_label}{space[used][gb]:.1f}GB / {space[total][gb]:.1f}GB"
+      label: "\udb80\udeca {volume_label}{used_percent}%"
+      label_alt: "Disk: {used_percent}% used of {total_gb}GB ({free_gb}GB free)"
       volume_label: "C:"
       update_interval: 60000
       callbacks:
