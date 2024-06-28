@@ -101,6 +101,27 @@ class BatteryWidget(BaseWidget):
                 active_label_formatted = active_label_formatted.replace(fmt_str, str(value))
 
             active_label.setText(active_label_formatted)
+
+            # Determine battery status
+            if battery_info['power_plugged']:
+                status_class = "status-charging"
+            elif battery_info['percent'] == 'N/A':
+                status_class = "status-critical"
+            elif battery_info['percent'] <= self._status_thresholds['critical']:
+                status_class = "status-critical"
+            elif battery_info['percent'] <= self._status_thresholds['low']:
+                status_class = "status-low"
+            elif battery_info['percent'] <= self._status_thresholds['medium']:
+                status_class = "status-medium"
+            elif battery_info['percent'] <= self._status_thresholds['high']:
+                status_class = "status-high"
+            else:
+                status_class = "status-full"
+
+            # Apply the status class
+            active_label.setProperty("class", f"label {status_class}")
+            active_label.setStyleSheet('')  # This triggers the CSS update
+
         except Exception:
             active_label.setText(active_label_content)
             logging.exception("Failed to retrieve updated battery info")
