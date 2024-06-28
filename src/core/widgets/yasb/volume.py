@@ -18,7 +18,7 @@ class VolumeWidget(BaseWidget):
         update_interval: int,
         callbacks: dict[str, str],
     ):
-        super().__init__(update_interval, class_name="volume-widget")
+        super().__init__(update_interval, class_name="dropdown-volume-widget")
         self._show_alt_label = False
         self._label_content = label
         self._label_alt_content = label_alt

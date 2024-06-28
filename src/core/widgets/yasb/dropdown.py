@@ -71,34 +71,34 @@ class DropdownWidget(BaseWidget):
 
     def _create_widget_instance(self, widget_name, options):
         if widget_name == "cpu":
-            from core.widgets.dropdown.cpu import CpuWidget
+            from core.widgets.yasb.cpu import CpuWidget
             return CpuWidget(**options)
         elif widget_name == "memory":
-            from core.widgets.dropdown.memory import MemoryWidget
+            from core.widgets.yasb.memory import MemoryWidget
             return MemoryWidget(**options)
         elif widget_name == "volume":
-            from core.widgets.dropdown.volume import VolumeWidget
+            from core.widgets.yasb.volume import VolumeWidget
             return VolumeWidget(**options)
         elif widget_name == "battery":
-            from core.widgets.dropdown.battery import BatteryWidget
+            from core.widgets.yasb.battery import BatteryWidget
             return BatteryWidget(**options)
         elif widget_name == "clock":
-            from core.widgets.dropdown.clock import ClockWidget
+            from core.widgets.yasb.clock import ClockWidget
             return ClockWidget(**options)
         elif widget_name == "disk":
-            from core.widgets.dropdown.disk import DiskWidget
+            from core.widgets.yasb.disk import DiskWidget
             return DiskWidget(**options)
         elif widget_name == "traffic":
-            from core.widgets.dropdown.traffic import TrafficWidget
+            from core.widgets.yasb.traffic import TrafficWidget
             return TrafficWidget(**options)
         elif widget_name == "wifi":
-            from core.widgets.dropdown.wifi import WifiWidget
+            from core.widgets.yasb.wifi import WifiWidget
             return WifiWidget(**options)
         elif widget_name == "active_window":
-            from core.widgets.dropdown.active_window import ActiveWindowWidget
+            from core.widgets.yasb.active_window import ActiveWindowWidget
             return ActiveWindowWidget(**options)
         elif widget_name == "ip_info":
-            from core.widgets.dropdown.custom import CustomWidget
+            from core.widgets.yasb.custom import CustomWidget
             return CustomWidget(**options)
         elif widget_name == "media_player":
             from core.widgets.win32.media_player import MediaWidget

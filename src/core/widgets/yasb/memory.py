@@ -17,7 +17,7 @@ class MemoryWidget(BaseWidget):
             callbacks: dict[str, str],
             memory_thresholds: dict[str, int]
     ):
-        super().__init__(update_interval, class_name="memory-widget")
+        super().__init__(update_interval, class_name="dropdown-memory-widget")
         self._memory_thresholds = memory_thresholds
 
         self._show_alt_label = False

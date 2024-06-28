@@ -3,7 +3,7 @@ from collections import deque
 from core.widgets.base import BaseWidget
 from core.validation.widgets.yasb.cpu import VALIDATION_SCHEMA
 from PyQt6.QtWidgets import QLabel
-
+import logging
 
 class CpuWidget(BaseWidget):
     validation_schema = VALIDATION_SCHEMA
@@ -58,20 +58,11 @@ class CpuWidget(BaseWidget):
 
         self._update_label()
 
-    def _update_label(self):
-        active_label = self._label_alt if self._show_alt_label else self._label
-        active_label_content = self._label_alt_content if self._show_alt_label else self._label_content
-        active_label.setText(active_label_content)
-
-        try:
-            info = self._get_cpu_info()
-            active_label.setText(active_label_content.format(info=info))
-        except Exception:
-            active_label.setText(active_label_content)
-
     def _get_histogram_bar(self, num, num_min, num_max):
-        bar_index = int((num - num_min) / (num_max - num_min) * 10)
-        bar_index = 8 if bar_index > 8 else bar_index
+        if num_max == num_min:
+            return self._histogram_icons[0]
+        bar_index = int((num - num_min) / (num_max - num_min) * (len(self._histogram_icons) - 1))
+        bar_index = min(max(bar_index, 0), len(self._histogram_icons) - 1)
         return self._histogram_icons[bar_index]
 
     def _get_cpu_info(self) -> dict:
@@ -87,20 +78,16 @@ class CpuWidget(BaseWidget):
         self._cpu_perc_history.append(current_perc)
 
         return {
-            'cores': {
-                'physical': psutil.cpu_count(logical=False),
-                'total': psutil.cpu_count(logical=True)
-            },
-            'freq': {
+            'cpu_freq': {
                 'min': min_freq,
                 'max': max_freq,
                 'current': current_freq
             },
-            'percent': {
-                'core': cores_perc,
-                'total': current_perc
+            'cpu_percent': {
+                'total': current_perc,
+                'cores': cores_perc
             },
-            'stats': {
+            'cpu_stats': {
                 'context_switches': cpu_stats.ctx_switches,
                 'interrupts': cpu_stats.interrupts,
                 'soft_interrupts': cpu_stats.soft_interrupts,
@@ -118,3 +105,34 @@ class CpuWidget(BaseWidget):
                 ]).encode('utf-8').decode('unicode_escape'),
             }
         }
+
+    def _update_label(self):
+        active_label = self._label_alt if self._show_alt_label else self._label
+        active_label_content = self._label_alt_content if self._show_alt_label else self._label_content
+        active_label_formatted = active_label_content
+
+        try:
+            cpu_info = self._get_cpu_info()
+
+            label_options = [
+                ("{cpu_freq_min}", cpu_info['cpu_freq']['min']),
+                ("{cpu_freq_max}", cpu_info['cpu_freq']['max']),
+                ("{cpu_freq_current}", cpu_info['cpu_freq']['current']),
+                ("{cpu_percent_total}", cpu_info['cpu_percent']['total']),
+                ("{cpu_percent_cores}", ", ".join(map(str, cpu_info['cpu_percent']['cores']))),
+                ("{cpu_stats_context_switches}", cpu_info['cpu_stats']['context_switches']),
+                ("{cpu_stats_interrupts}", cpu_info['cpu_stats']['interrupts']),
+                ("{cpu_stats_soft_interrupts}", cpu_info['cpu_stats']['soft_interrupts']),
+                ("{cpu_stats_sys_calls}", cpu_info['cpu_stats']['sys_calls']),
+                ("{histogram_cpu_freq}", cpu_info['histograms']['cpu_freq']),
+                ("{histogram_cpu_percent}", cpu_info['histograms']['cpu_percent']),
+                ("{histogram_cores}", cpu_info['histograms']['cores']),
+            ]
+
+            for fmt_str, value in label_options:
+                active_label_formatted = active_label_formatted.replace(fmt_str, str(value))
+
+            active_label.setText(active_label_formatted)
+        except Exception:
+            active_label.setText(active_label_content)
+            logging.exception("Failed to retrieve updated CPU info")
