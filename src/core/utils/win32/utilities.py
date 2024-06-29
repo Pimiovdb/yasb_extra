@@ -98,8 +98,3 @@ def get_hwnd_info(hwnd: int) -> dict:
             'monitor_info': monitor_info,
             'rect': get_window_rect(hwnd)
         }
-
-def get_foreground_window():
-    user32 = ctypes.windll.user32
-    hwnd = user32.GetForegroundWindow()
-    return hwnd

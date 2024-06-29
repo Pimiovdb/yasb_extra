@@ -1,106 +1,154 @@
-/* General styles */
 * {
-  font-family: 'JetBrainsMonoNL Nerd Font';
-  font-size: 16px;
+    /* Bar measurement icons: https://github.com/and3rson/graph-bars-font */
+    /* Icon set: https://fontawesome.com/v5.15/how-to-use/on-the-desktop/setup/getting-started */
+    font-family: 'JetBrainsMono NF', 'Courier New', 'Bars', 'Font Awesome 5 Free';
+    font-size: 14px;
+    color: #f2e5bc;
 }
 
 .bar {
-  padding-right: 5px;
+    background: rgba(29, 32, 33, 0.3);
+    border: 1px solid #504945;
+    padding: 0 5px;
 }
-.bar .widget{
-  background: #bdae93;
+
+.container-right .widget {
+  margin: 2px;
   border-radius: 5px;
-  margin-left: 5px;
-  margin-top: 2px;
 }
-.bar .widget .label{
+
+.container-right .widget * {
   color: #242424;
-  font-weight: bold;
 }
-.bar .widget:hover{
+.komorebi-workspaces {
+  margin-left: 0;
+}
+.ws-btn {
+    padding: 5px;
+    background: rgba(60, 56, 54, 0.4);
+    border: 1px solid rgba(168, 153, 132, 0.4);
+    margin: 2px 1px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.ws-btn:hover {
+    color: #fbf1c7;
+    font-weight: bold;
+}
+
+.ws-btn.populated {
+    border-color: rgba(168, 153, 132, 1.0);
+    color: #ebdbb2;
+}
+
+.ws-btn.active {
+    background: rgba(251, 241, 199, 0.85);
+    color: #121212;
+}
+
+.custom-widget {
+    padding: 2px 6px;
+    font-size: 14px;
+    background: #bdae93;
+}
+.custom-widget .icon {
+  font-size: 13px;
+}
+.custom-widget:hover {
   background: #fbf1c7;
 }
+.custom-widget .icon.icon-left {
+    margin-right: 5px;
+}
+.custom-widget .icon.icon-right {
+    margin-left: 5px;
+}
+.custom-widget.hostname-widget {
+    background: #83a598;
+}
 
-.label{
+.custom-widget.terminal-widget {
+    font-size: 14px;
+}
+
+.cpu-widget .label,
+.wifi-widget .label,
+.memory-widget .label,
+.traffic-widget .label,
+.battery-widget .label {
   padding: 2px 5px;
+  font-size: 14px;
   border-radius: 5px;
 }
 
-
-
-.media-widget .thumbnail{
-
+.traffic-widget .label {
+    background: #B3D3D9;
 }
-.media-widget .label{
 
+.wifi-widget .label {
+  background: #b8bb26;
 }
-.media-btn {
+
+.cpu-widget .label {
+  background: #d3869b;
+}
+
+.battery-widget .label.status-critical {
+  background: #fb4934;
+}
+.battery-widget .label.status-low {
+  background: #fe8019;
+}
+.battery-widget .label.status-medium {
+  background: #fabd2f;
+}
+.battery-widget .label.status-high {
+  background: #b8bb26;
+}
+.battery-widget .label.status-full {
+  background: #8ec07c;
+}
+.battery-widget .label.status-charging {
+  background: #8ec07c;
+}
+.battery-widget,
+.memory-widget {
+  margin: 0;
+}
+
+.memory-widget .label.status-low {
+  background: #689d6a;
+}
+.memory-widget .label.status-medium {
+  background: #fe8019;
+}
+.memory-widget .label.status-high {
+  background: #cc241d;
+}
+.active-window-widget {
+  margin-left: 5px;
+}
+.active-window-widget .label {
+  padding: -5px 7px 0 7px;
   color: #242424;
-  padding-right: 12px;
+  background: #83a598;
+  margin-bottom: -1px;
+  border-radius: 3px;
+  margin: 2px;
+}
+
+.komorebi-active-layout .label {
+  color: #fbf1c7;
+  margin: -4px 2px 2px 8px;
+  font-family: Hack;
+}
+
+.media-widget .media-btn {
+  padding: 0 5px;
   font-weight: bold;
 }
 
 .media-btn {
   background: transparent;
 }
-
-.media-btn:hover {
-  color: #656766;
-}
-
-.media-btn.shuffle.active {
-  
-}
-
-
-.ws-btn:hover {
-  background: #fbf1c7;
-}
-.ws-btn {
-  padding: 5px 10px;
-  background: #bdae93;
-  margin: 2px;
-  border-radius: 5px;
-  color: #242424;
-  font-weight: bold;
-}
-.ws-btn.populated{
-  background: #fbf1c7;
-}
-.ws-btn.active {
-  background: #fbf1c7;
-  height: 32px;
-  border-bottom: 1px solid #242424;
-}
-
-
-.battery-widget .label.status-full,
-.battery-widget .label.status-charging {
-  color: #5f924d;
-}
-.battery-widget .label.status-critical {
-  color: #d15142;
-}
-.battery-widget .label.status-low {
-  color: #df8a45;
-}
-.battery-widget .label.status-medium {
-  color: #e2b345;
-}
-.battery-widget .label.status-high {
-  color: #b7b85a;
-}
-
-
-.dropdown-button {
-  color: #242424;
-  width: 30px;
-  border-radius: 5px;
-
-}
-.dropdown-button::menu-indicator {
-  height: 0;
-  width: 5px;
-}
-
-

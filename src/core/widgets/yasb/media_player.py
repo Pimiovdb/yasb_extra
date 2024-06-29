@@ -1,7 +1,7 @@
 import asyncio
 from itertools import cycle, islice
 from core.widgets.base import BaseWidget
-from core.validation.widgets.win32.media_player import VALIDATION_SCHEMA
+from core.validation.widgets.yasb.media_player import VALIDATION_SCHEMA
 from core.utils.win32 import media_control
 from PyQt6.QtWidgets import QLabel, QPushButton
 from PyQt6.QtCore import Qt
@@ -25,7 +25,7 @@ class MediaWidgetButton(QPushButton):
 async def call_async_callback(callback, *args):
     await callback(*args)
 
-class MediaWidget(BaseWidget):
+class MediaPlayerWidget(BaseWidget):
     validation_schema = VALIDATION_SCHEMA
 
     def __init__(
