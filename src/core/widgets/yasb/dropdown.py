@@ -70,41 +70,28 @@ class DropdownWidget(BaseWidget):
         self._menu.addAction(widget_action)
 
     def _create_widget_instance(self, widget_name, options):
-        if widget_name == "cpu":
-            from core.widgets.yasb.cpu import CpuWidget
-            return CpuWidget(**options)
-        elif widget_name == "memory":
-            from core.widgets.yasb.memory import MemoryWidget
-            return MemoryWidget(**options)
-        elif widget_name == "volume":
-            from core.widgets.yasb.volume import VolumeWidget
-            return VolumeWidget(**options)
-        elif widget_name == "battery":
-            from core.widgets.yasb.battery import BatteryWidget
-            return BatteryWidget(**options)
-        elif widget_name == "clock":
-            from core.widgets.yasb.clock import ClockWidget
-            return ClockWidget(**options)
-        elif widget_name == "disk":
-            from core.widgets.yasb.disk import DiskWidget
-            return DiskWidget(**options)
-        elif widget_name == "traffic":
-            from core.widgets.yasb.traffic import TrafficWidget
-            return TrafficWidget(**options)
-        elif widget_name == "wifi":
-            from core.widgets.yasb.wifi import WifiWidget
-            return WifiWidget(**options)
-        elif widget_name == "active_window":
-            from core.widgets.yasb.active_window import ActiveWindowWidget
-            return ActiveWindowWidget(**options)
-        elif widget_name == "ip_info":
-            from core.widgets.yasb.custom import CustomWidget
-            return CustomWidget(**options)
-        elif widget_name == "media_player":
-            from core.widgets.win32.media_player import MediaWidget
-            return MediaWidget(**options)
+        widget_mapping = {
+            "cpu": "core.widgets.yasb.cpu.CpuWidget",
+            "memory": "core.widgets.yasb.memory.MemoryWidget",
+            "volume": "core.widgets.yasb.volume.VolumeWidget",
+            "battery": "core.widgets.yasb.battery.BatteryWidget",
+            "clock": "core.widgets.yasb.clock.ClockWidget",
+            "disk": "core.widgets.yasb.disk.DiskWidget",
+            "traffic": "core.widgets.yasb.traffic.TrafficWidget",
+            "wifi": "core.widgets.yasb.wifi.WifiWidget",
+            "active_window": "core.widgets.yasb.active_window.ActiveWindowWidget",
+            "ip_info": "core.widgets.yasb.custom.CustomWidget",
+            "media_player": "core.widgets.win32.media_player.MediaWidget"
+        }
+
+        if widget_name in widget_mapping:
+            module_path, class_name = widget_mapping[widget_name].rsplit('.', 1)
+            module = __import__(module_path, fromlist=[class_name])
+            widget_class = getattr(module, class_name)
+            return widget_class(**options)
         else:
             raise ValueError(f"Unknown widget: {widget_name}")
+
 
     def _update_items(self):
         try:
