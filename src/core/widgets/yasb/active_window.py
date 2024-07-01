@@ -6,7 +6,8 @@ from core.event_service import EventService
 from PyQt6.QtCore import pyqtSignal, QTimer
 from PyQt6.QtWidgets import QLabel
 from core.validation.widgets.yasb.active_window import VALIDATION_SCHEMA
-from core.utils.win32.utilities import get_hwnd_info, get_foreground_window
+from core.utils.win32.utilities import get_hwnd_info, get_foreground_window, get_executable_name
+
 
 IGNORED_TITLES = ['', ' ']
 IGNORED_CLASSES = ['WorkerW']
@@ -72,6 +73,7 @@ class ActiveWindowWidget(BaseWidget):
     def _get_active_window_info(self) -> dict:
         hwnd = get_foreground_window()
         win_info = get_hwnd_info(hwnd)
+        executable_name = get_executable_name(hwnd)  # Retrieve the executable name
         if (not win_info or not hwnd or
                 not win_info['title'] or
                 win_info['title'] in IGNORED_YASB_TITLES or
@@ -79,18 +81,22 @@ class ActiveWindowWidget(BaseWidget):
             return {
                 'title': 'N/A',
                 'process': 'N/A',
-                'class_name': 'N/A'
+                'class_name': 'N/A',
+                'executable': 'N/A'
             }
 
         if self._monitor_exclusive and self.screen().name() != win_info['monitor_info'].get('device', None):
             return {
                 'title': 'N/A',
                 'process': 'N/A',
-                'class_name': 'N/A'
+                'class_name': 'N/A',
+                'executable': 'N/A'
             }
 
         if self._max_length and len(win_info['title']) > self._max_length:
             win_info['title'] = f"{win_info['title'][:self._max_length]}{self._max_length_ellipsis}"
+
+        win_info['executable'] = executable_name  # Add the executable name to the window info
 
         return win_info
 
@@ -102,6 +108,7 @@ class ActiveWindowWidget(BaseWidget):
                 ("{title}", active_window_info['title']),
                 ("{process}", active_window_info['process']),
                 ("{class_name}", active_window_info['class_name']),
+                ("{executable}", active_window_info['executable']),  # Add the executable label option
             ]
 
             active_label_formatted = self._active_label

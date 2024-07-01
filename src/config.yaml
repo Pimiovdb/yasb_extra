@@ -60,7 +60,7 @@ widgets:
   active_window:
     type: "yasb.active_window.ActiveWindowWidget"
     options:
-      label: "{title}"
+      label: "{executable}"
       label_alt: "{class_name}"
       label_no_window: ""
       max_length: 30

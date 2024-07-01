@@ -1,3 +1,4 @@
+import logging
 import psutil
 import ctypes
 import ctypes.wintypes
@@ -5,6 +6,8 @@ from win32process import GetWindowThreadProcessId
 from win32gui import GetWindowText, GetClassName, GetWindowRect, GetWindowPlacement
 from win32api import MonitorFromWindow, GetMonitorInfo
 from contextlib import suppress
+
+from ctypes import wintypes
 
 
 SW_MAXIMIZE = 3
@@ -103,3 +106,14 @@ def get_foreground_window():
     user32 = ctypes.windll.user32
     hwnd = user32.GetForegroundWindow()
     return hwnd
+
+
+def get_executable_name(hwnd) -> str:
+    try:
+        pid = wintypes.DWORD()
+        ctypes.windll.user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+        process = psutil.Process(pid.value)
+        return process.name()
+    except Exception as e:
+        logging.error(f"Error retrieving executable name: {e}")
+        return "N/A"
