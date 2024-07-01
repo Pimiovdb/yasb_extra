@@ -5,7 +5,11 @@ from core.config import get_config_and_stylesheet
 from core.log import init_logger
 from core.tray import TrayIcon
 from core.watcher import create_observer
+import logging
+import asyncio
 
+
+logging.getLogger('asyncio').setLevel(logging.WARNING)
 
 def main():
     config, stylesheet = get_config_and_stylesheet()
