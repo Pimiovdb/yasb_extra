@@ -25,8 +25,8 @@ bars:
       bottom: 0
       right: 0
     widgets:
-      left: ["open_startmenu", "komorebi_workspaces", "komorebi_active_layout"]
-      center: ["clock", "media_player"]
+      left: ["open_startmenu", "komorebi_workspaces", "komorebi_active_layout", "media_player"]
+      center: ["clock", "weather"]
       right: ["dropdown_menu", "terminal_button", "explorer_button", "volume", "wifi", "battery"]
 
   monitor-bar:
@@ -53,8 +53,8 @@ bars:
       right: 0
     widgets:
       left: ["komorebi_workspaces", "komorebi_active_layout", "active_window"]
-      center: ["clock"]
-      right: ["weather", "traffic","volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
+      center: ["clock", "weather"]
+      right: [ "traffic","volume", "terminal_button", "explorer_button", "ip_info", "disk", "cpu", "memory", "wifi", "battery"]
 
 widgets:
   active_window:
@@ -71,8 +71,8 @@ widgets:
     type: "yasb.battery.BatteryWidget"
     options:
       time_remaining_natural: true
-      label: "{icon}{battery_percent}%"
-      label_alt: "{battery_percent}%"
+      label: "{icon}"
+      label_alt: "{icon}{battery_percent}%"
       update_interval: 1000
       charging_options:
         icon_format: "{charging_icon} {icon}"
@@ -361,7 +361,7 @@ widgets:
               medium: 50
               high: 90
         "6":
-          widget: "ip_info"
+          widget: "custom"
           options:
             label: "\udb82\ude60 {data[ip]}"
             label_alt: "\udb82\ude60 [Hidden]"

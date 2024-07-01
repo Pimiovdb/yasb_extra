@@ -80,7 +80,7 @@ class DropdownWidget(BaseWidget):
             "traffic": "core.widgets.yasb.traffic.TrafficWidget",
             "wifi": "core.widgets.yasb.wifi.WifiWidget",
             "active_window": "core.widgets.yasb.active_window.ActiveWindowWidget",
-            "ip_info": "core.widgets.yasb.custom.CustomWidget",
+            "custom": "core.widgets.yasb.custom.CustomWidget",
             "media_player": "core.widgets.win32.media_player.MediaWidget"
         }
 
